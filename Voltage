@@ -1,0 +1,12 @@
+#include <Wire.h>
+ float voltage;
+ float carpan =120.92;  // gerilim bölücü devrenin direnç değeri
+  
+void setup() {
+ Serial.begin(115200);
+}
+
+void loop() {
+   voltage = analogRead(A0);
+  Serial.println(analogRead(A0)/carpan);
+}

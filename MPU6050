@@ -1,0 +1,51 @@
+#include <Wire.h>
+
+const int MPU6050Address = 0x68; // MPU6050 adresi
+
+int minVal = 265; // Düşük sınırdaki ivme değeri
+int maxVal = 402; // Yüksek sınırdaki ivme değeri
+float Pitch , Roll , Yaw;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+  Wire.beginTransmission(MPU6050Address);
+  Wire.write(0x6B); // PWR_MGMT_1 adresine yaz
+  Wire.write(0);    // 0 değeriyle uyan
+  Wire.endTransmission(true);
+
+}
+
+void loop() {
+  Serial.print(Pitch);
+  Serial.print(";");
+  Serial.print(Roll);
+  Serial.print(";");
+  Serial.print(Yaw);
+  Serial.println(";");
+
+}
+
+
+void mpu(){
+
+  Wire.beginTransmission(MPU6050Address);
+  Wire.write(0x3B); // Başlangıç adresi: 0x3B (Ivme verilerinin başladığı adres)
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU6050Address, 6, true); // 6 bayt veriyi talep et (Ivme ve dönme hızı verileri)
+
+  // Verileri oku ve birleştir
+  int16_t AcX = Wire.read() << 8 | Wire.read();
+  int16_t AcY = Wire.read() << 8 | Wire.read();
+  int16_t AcZ = Wire.read() << 8 | Wire.read();
+
+  // Ivme verilerini belirtilen aralığa map et
+  int xAng = map(AcX, minVal, maxVal, -90, 90);
+  int yAng = map(AcY, minVal, maxVal, -90, 90);
+  int zAng = map(AcZ, minVal, maxVal, -90, 90);
+
+  // Pitch, Roll ve Yaw açılarını hesapla
+   Pitch = RAD_TO_DEG * (atan2(-yAng, -zAng) + PI);
+   Roll = RAD_TO_DEG * (atan2(-xAng, -zAng) + PI);
+   Yaw = RAD_TO_DEG * (atan2(-yAng, -xAng) + PI);
+} 

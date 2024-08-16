@@ -1,0 +1,33 @@
+///FOR TEENSY4.1
+
+#include <SD.h>
+
+const int chipSelect = BUILTIN_SDCARD; // SD kartın pinini tanımla
+File dataFile; // Dosya nesnesi
+ const uint8_t SD_CHIP_SELECT = 53;
+ 
+void setup() {
+    Serial.begin(115200);
+  // SD kartı başlat
+  if (!SD.begin(chipSelect)) {
+    Serial.println("SD kart başlatılamadı!");
+    return;
+  }
+  buzzer_led();
+  
+  Serial.println("SD kart başarıyla başlatıldı.");
+
+}
+
+void loop() {
+    dataFile = SD.open("YUSUF-DOSYA", FILE_WRITE);
+
+  // Dosya başarıyla açıldıysa
+  if (dataFile) {
+    // Verileri dosyaya yaz
+  dataFile.print(1);
+  dataFile.print(";");
+  dataFile.print(2);
+  dataFile.println(";");
+
+}

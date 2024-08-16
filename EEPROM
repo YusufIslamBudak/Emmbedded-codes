@@ -1,0 +1,38 @@
+#include <EEPROM.h> 
+
+int ana_sayac, yan_sayac_2, yan_sayac_1;
+
+void setup() {
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+  Serial.begin(115200);
+  Serial.println(yan_sayac_2);
+  EEPROM_OKU_YAZ();
+  EEEPROM();
+
+}
+
+
+void EEEPROM() {
+    ana_sayac++;
+    yan_sayac_2 = yan_sayac_1 * 256 + ana_sayac;
+    if (ana_sayac == 256) {
+        yan_sayac_2 = yan_sayac_1 * 256 + ana_sayac;
+        yan_sayac_1++;
+        EEPROM.write(4, yan_sayac_1);
+    }
+    EEPROM.write(3, ana_sayac);
+}
+
+
+ void EEPROM_SIFIRLA(){
+      EEPROM.write(3,0);
+      EEPROM.write(4,0);
+}
+ void EEPROM_OKU_YAZ(){
+      ana_sayac = EEPROM.read(3);
+      yan_sayac_1 = EEPROM.read(4);
+}
